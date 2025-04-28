@@ -1,28 +1,73 @@
 import random
+
+
 class Environment:
     def __init__(self):
-        self.vulnerabilities = ["Safe", "Low Risk Vulnerable", "High Risk Vulnerable"];
+        self.components = {}
+        self.initialize_system()
+    
+    def initialize_system(self):
+    
+        for i in range(9):
+            component = chr(65 + i)  # A through I
+            status = random.choices(
+                ['Safe', 'Low Risk', 'High Risk'],
+                weights=[0.4, 0.4, 0.2],
+                k=1
+            )[0]
+            self.components[component] = status
+    
+    def display_system_state(self, message="Current System State"):
+        
+        print(f"\n{message}:")
+        print("-" * 30)
+        for component, status in self.components.items():
+            print(f"Component {component}: {status}")
+        print("-" * 30)
 
-        self.component = {chr(65+i): random.choice(self.vulnerabilities) for i in range(9)};
-        
-        
-    def display(self):
-        for x, y in self.component.items():
-            print(f"Component: {x}: {y}")
-        
 
-class SystemScan:
-    def __init(self):
-        pass;
+class SecurityAgent:
+    def __init__(self, environment):
+        self.environment = environment
+        self.premium_service_available = False
+    
+    def scan_system(self):
         
-    def scan(self, components):
-        for x, y in components.items():
-            if(y == "Safe"):
-                print(f"The component {x} is logged in")
+        print("\nScanning System Components:")
+        print("-" * 30)
+        for component, status in self.environment.components.items():
+            if status == 'Safe':
+                print(f"Component {component} is secure")
             else:
-                print(f"The component {x} is:  {y}")
+                print(f" Component {component} has {status} vulnerabilities")
+        print("-" * 30)
+    
+    def patch_vulnerabilities(self):
         
-        
-e = Environment()
+        print("\nPatching Vulnerabilities:")
+        print("-" * 30)
+        for component, status in self.environment.components.items():
+            if status == 'Low Risk':
+                self.environment.components[component] = 'Safe'
+                print(f" Patched Low Risk vulnerability in Component {component}")
+            elif status == 'High Risk':
+                if self.premium_service_available:
+                    self.environment.components[component] = 'Safe'
+                    print(f" Patched High Risk vulnerability in Component {component} using premium service")
+                else:
+                    print(f" High Risk vulnerability in Component {component} requires premium service")
+        print("-" * 30)
 
-e.display()
+
+env = Environment()
+
+agent = SecurityAgent(env)
+
+env.display_system_state("Initial System State")
+
+agent.scan_system()    
+
+agent.patch_vulnerabilities()
+
+env.display_system_state("Final System State")
+
